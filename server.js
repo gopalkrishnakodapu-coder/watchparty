@@ -69,13 +69,14 @@ io.on('connection', s => {
     if (x.members.size >= MAX && !x.members.has(s.id)) return ack({ error: `The party is full (${MAX} people).` });
     const u = who(cookie(s.request.headers.cookie, 'sess'));
     clearTimeout(x.timer); R = x; s.join(id);
-    R.members.set(s.id, { id: s.id, name: String(name || (u && u.name) || 'Guest').slice(0, 24), picture: (u && u.picture) || '', owner: !!u && u.email === R.owner, voice: false, video: false });
+    R.members.set(s.id, { id: s.id, name: String(name || (u && u.name) || 'Guest').slice(0, 24), picture: (u && u.picture) || '', owner: !!u && u.email === R.owner, voice: false });
     ack({ me: s.id, movie: R.movie, state: R.state, now: Date.now(), max: MAX }); push(R);
   });
-  s.on('ctrl', d => { if (!R || !R.members.has(s.id)) return; R.state = { playing: !!d.playing, time: +d.time || 0, at: Date.now() }; s.to(R.id).emit('state', R.state); });
+  s.on('ctrl', d => { if (!R || !R.members.has(s.id)) return; R.state = { playing: !!d.playing, time: +d.time || 0, at: Date.now() }; s.to(R.id).emit('state', { ...R.state, by: R.members.get(s.id).name }); });
   s.on('chat', t => { const m = R && R.members.get(s.id); if (m) io.to(R.id).emit('chat', { id: s.id, name: m.name, text: String(t).slice(0, 300) }); });
-  s.on('voice', on => { const m = R && R.members.get(s.id); if (m) { m.voice = !!on; if (!on) m.video = false; push(R); } });
-  s.on('camera', on => { const m = R && R.members.get(s.id); if (m) { m.video = !!on; push(R); } });
+  s.on('voice', on => { const m = R && R.members.get(s.id); if (m) { m.voice = !!on; push(R); } });
+  s.on('cam', on => { const m = R && R.members.get(s.id); if (m) { m.cam = !!on; push(R); } });
+  s.on('mic', on => { const m = R && R.members.get(s.id); if (m) { m.mic = !!on; push(R); } });
   s.on('signal', ({ to, data }) => { if (R && R.members.has(to)) io.to(to).emit('signal', { from: s.id, data }); });
   s.on('disconnect', () => {
     if (!R) return; R.members.delete(s.id); push(R);

@@ -4,81 +4,86 @@
 <title>Movie Watch Party</title>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
-:root{--bg:#0b0d14;--p:#141826;--p2:#1b2133;--line:#262d44;--text:#eef0f7;--mute:#8d96b3;--red:#e5383b;--green:#2ecc71;color-scheme:dark}
+:root{--bg:#000;--p:#1a1b1e;--p2:#26272b;--line:#34353a;--text:#f2f2f4;--mute:#8b8d96;--blue:#2f7bff;--red:#e5383b;color-scheme:dark}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,Segoe UI,sans-serif}
-button,.btn{background:var(--red);color:#fff;border:0;border-radius:8px;padding:9px 14px;font:inherit;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block}
-.ghost{background:var(--p2);border:1px solid var(--line);color:var(--text)}
-input[type=text]{background:var(--bg);border:1px solid var(--line);color:var(--text);padding:10px;border-radius:8px;font:inherit;min-width:0}
+button,.btn{background:var(--blue);color:#fff;border:0;border-radius:8px;padding:9px 14px;font:inherit;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block}
+.ghost{background:var(--p2);color:var(--text)}
+input[type=text]{background:var(--p2);border:1px solid var(--line);color:var(--text);padding:10px;border-radius:8px;font:inherit;min-width:0}
 .mute{color:var(--mute);font-size:13px}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .center{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px}
 .card{background:var(--p);border:1px solid var(--line);border-radius:16px;padding:28px;max-width:400px;width:100%;text-align:center}
 .card h1{margin:0 0 8px;font-size:22px}.card .row{justify-content:center;margin-top:12px}
 #gbtn,#gbtn2{display:flex;justify-content:center;margin-top:14px}
 .av{width:40px;height:40px;border-radius:50%;object-fit:cover;display:flex;align-items:center;justify-content:center;font-weight:700;flex:none;color:#fff}
-.top{display:flex;align-items:center;gap:12px;padding:12px 18px;border-bottom:1px solid var(--line)}
-.title{flex:1;font-weight:700;font-size:17px}.title small{display:block;color:var(--mute);font-weight:400;font-size:12px}
-.pill{background:var(--p2);border:1px solid var(--line);border-radius:99px;padding:4px 12px;font-size:13px}
-.stage{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:16px;padding:16px 18px;max-width:1400px;margin:0 auto}
-@media(max-width:860px){.stage{grid-template-columns:1fr}}
-.screen{background:#000;border-radius:14px;overflow:hidden;aspect-ratio:16/9;border:1px solid var(--line)}
-video{width:100%;height:100%}
-#calls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}
-.calltile{position:relative;background:#050608;border:1px solid var(--line);border-radius:12px;overflow:hidden;aspect-ratio:16/9;min-width:0}
-.calltile video{display:block;width:100%;height:100%;object-fit:cover}
-.calltile .label{position:absolute;left:8px;bottom:7px;background:#000a;padding:3px 8px;border-radius:6px;font-size:12px}
-.calltile .placeholder{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--mute);font-size:13px}
-@media(max-width:520px){#calls{grid-template-columns:1fr}}
-.bar{display:flex;gap:12px;align-items:center;margin-top:12px;flex-wrap:wrap}
-.side{background:var(--p);border:1px solid var(--line);border-radius:14px;display:flex;flex-direction:column;min-height:420px;max-height:calc(100vh - 100px)}
-.tabs{display:flex;border-bottom:1px solid var(--line)}
-.tab{flex:1;background:none;border-radius:0;color:var(--mute);padding:12px;border-bottom:2px solid transparent}
-.tab.on{color:var(--text);border-color:var(--red)}
-#dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--red);vertical-align:middle}
-.pane{flex:1;display:flex;flex-direction:column;padding:12px;min-height:0;gap:10px}
-#list{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:8px}
-.tile{display:flex;align-items:center;gap:12px;background:var(--p2);border:1px solid var(--line);border-radius:12px;padding:10px}
-.tile.live{border-color:var(--green)}.tile .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.tag{font-size:11px;color:var(--red);margin-left:6px}
-#msgs{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
-.m{display:flex;gap:8px;align-items:flex-end}.m.me{flex-direction:row-reverse}
-.m .av{width:28px;height:28px;font-size:12px}
-.bub{background:var(--p2);border-radius:12px;padding:6px 10px;max-width:80%;word-wrap:break-word}
-.m.me .bub{background:var(--red)}.bub b{display:block;font-size:11px;color:var(--mute)}.m.me .bub b{display:none}
-#modal{position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;padding:16px;z-index:9}
+#room{display:grid;grid-template-columns:minmax(0,1fr) 360px;height:100vh}
+@media(max-width:860px){#room{grid-template-columns:1fr;height:auto}}
+.main{display:flex;flex-direction:column;min-width:0}
+.leave{background:none;color:var(--text);font-size:16px;padding:14px 18px;text-align:left}
+.stage{position:relative;flex:1;min-height:260px;background:#000}
+#v{width:100%;height:100%;max-height:calc(100vh - 150px);background:#000;display:block}
+#ov{position:absolute;left:28px;top:20px;right:28px;pointer-events:none;text-shadow:0 2px 12px #000}
+#ov .by{color:#c9cad2}#ov h2{margin:4px 0 0;font-size:clamp(24px,4vw,44px)}
+.ctl{display:flex;align-items:center;gap:10px;padding:12px 18px;flex-wrap:wrap;border-top:1px solid var(--line)}
+.rb{width:44px;height:44px;border-radius:50%;padding:0;font-size:18px;background:var(--p2)}
+.rb.off{background:#5a2226}
+.side{background:var(--p);display:flex;flex-direction:column;min-height:0;border-left:1px solid var(--line)}
+.sh{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;font-weight:700;font-size:17px}
+.sh button{padding:6px 10px}
+#tiles{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:#000}
+.tile{position:relative;aspect-ratio:4/3;background:#2b2c31;overflow:hidden;border:2px solid transparent}
+.tile video{width:100%;height:100%;object-fit:cover;display:none}
+.tile.cam video{display:block}.tile.cam .av{display:none}
+.tile .av{position:absolute;inset:0;margin:auto;width:56px;height:56px;font-size:22px}
+.tile.away{opacity:.45}
+.tile .lb{position:absolute;left:6px;bottom:4px;font-size:12px;text-shadow:0 1px 4px #000}
+.tile .mi{position:absolute;right:6px;bottom:4px;font-size:12px}
+.msgh{display:flex;justify-content:space-between;padding:10px 16px;border-top:1px solid var(--line);color:var(--mute);font-size:14px}
+#msgs{flex:1;overflow-y:auto;padding:8px 14px;display:flex;flex-direction:column;gap:8px;min-height:140px}
+.sys{text-align:center;color:var(--mute);font-size:11px}
+.m{display:flex;gap:8px;align-items:flex-end}.m.me{justify-content:flex-end}
+.m .av{width:26px;height:26px;font-size:11px}
+.bub{background:#fff;color:#111;border-radius:14px;padding:6px 11px;max-width:80%;word-wrap:break-word;font-size:13px}
+.m.me .bub{background:var(--blue);color:#fff}.nm{font-size:10px;color:var(--mute)}
+.wr{display:flex;gap:8px;padding:10px 14px;border-top:1px solid var(--line)}
+#modal{position:fixed;inset:0;background:rgba(0,0,0,.75);display:flex;align-items:center;justify-content:center;padding:16px;z-index:9}
 #modal[hidden]{display:none}.wa{background:#1fa855}.tg{background:#2a8fd0}.ig{background:linear-gradient(45deg,#f09433,#dc2743,#bc1888)}
 </style></head><body>
 
 <div id="home" class="center" hidden><div class="card">
   <h1>🎬 Movie Watch Party</h1>
-  <p class="mute" id="who">Sign in with any Gmail to host a private screening for up to 4 friends.</p>
+  <p class="mute" id="who">Sign in with any Gmail to host a private theatre for up to 4 friends.</p>
   <div id="acct" class="row" hidden><img id="pic" class="av" referrerpolicy="no-referrer" alt=""><span id="mail"></span></div>
   <div id="gbtn"></div>
-  <div class="row"><button id="create" hidden>Create a party</button><button class="ghost" id="switch" hidden>Use a different Gmail</button></div>
+  <div class="row"><button id="create" hidden>Create a theatre</button><button class="ghost" id="switch" hidden>Use a different Gmail</button></div>
   <p class="mute" id="err"></p>
 </div></div>
 
 <div id="join" class="center" hidden><div class="card">
-  <h1>You’re invited 🍿</h1><p class="mute">Join the screening as a guest, or with your Gmail.</p>
+  <h1>You’re invited 🍿</h1><p class="mute">Join the theatre as a guest, or with your Gmail.</p>
   <div class="row"><input type="text" id="nm" maxlength="24" placeholder="Your name"><button id="go">Join</button></div>
   <p class="mute">or</p><div id="gbtn2"></div><p class="mute" id="jerr"></p>
 </div></div>
 
 <div id="room" hidden>
-  <div class="top"><button class="ghost" id="leave">← Leave</button>
-    <div class="title">Movie Watch Party<small id="mname">No movie yet</small></div>
-    <span class="pill" id="cap"></span><button id="inv">+ Invite friends</button></div>
-  <div class="stage">
-    <section><div class="screen"><video id="v" controls playsinline></video></div>
-      <div class="bar"><label class="btn ghost">⬆ Upload movie<input type="file" id="up" accept="video/*" hidden></label>
-      <span class="mute" id="st">Connecting…</span></div><div id="calls" aria-label="Video call participants"></div></section>
-    <aside class="side">
-      <div class="tabs"><button class="tab on" data-t="pm">Members</button><button class="tab" data-t="pc">Chat <i id="dot" hidden></i></button></div>
-      <div class="pane" id="pm"><div id="list"></div>
-        <div class="row"><button id="vj">📹 Join video & audio</button><button class="ghost" id="vm" hidden>Mute mic</button><button class="ghost" id="vc" hidden>Camera off</button><button class="ghost" id="vl" hidden>Leave call</button></div></div>
-      <div class="pane" id="pc" hidden><div id="msgs"></div>
-        <div class="row" style="flex-wrap:nowrap"><input type="text" id="msg" maxlength="300" placeholder="Type a message…" style="flex:1"><button id="send">Send</button></div></div>
-    </aside>
+  <div class="main">
+    <button class="leave" id="leave">‹ Leave Theatre</button>
+    <div class="stage"><video id="v" controls playsinline></video>
+      <div id="ov" hidden><div class="by" id="by"></div><h2 id="mt"></h2></div></div>
+    <div class="ctl">
+      <button class="rb" id="b10" title="Back 10s">⏪</button><button class="rb" id="f10" title="Forward 10s">⏩</button>
+      <button class="rb" id="bc" title="Camera" hidden>📷</button><button class="rb" id="bm" title="Microphone" hidden>🎙</button>
+      <button id="vj">🎥 Join call</button><button class="ghost" id="vl" hidden>Leave call</button>
+      <label class="btn ghost">⬆ Upload movie<input type="file" id="up" accept="video/*" hidden></label>
+      <span class="mute" id="st">Connecting…</span>
+    </div>
   </div>
+  <aside class="side">
+    <div class="sh"><span id="tt">Theatre</span><button id="inv">+ Invite</button></div>
+    <div id="tiles"></div>
+    <div class="msgh"><span>Messages</span><span id="cap"></span></div>
+    <div id="msgs"></div>
+    <div class="wr"><input type="text" id="msg" maxlength="300" placeholder="Write a message…" style="flex:1"><button id="send">SEND</button></div>
+  </aside>
   <div id="modal" hidden><div class="card"><h1>Invite friends</h1>
     <input type="text" id="lnk" readonly style="width:100%">
     <div class="row"><a class="btn wa" id="wa" target="_blank" rel="noopener">WhatsApp</a><a class="btn tg" id="tg" target="_blank" rel="noopener">Telegram</a>
@@ -90,12 +95,13 @@ video{width:100%;height:100%}
 <script>
 const $=i=>document.getElementById(i),v=$('v'),st=t=>$('st').textContent=t;
 const show=i=>['home','join','room'].forEach(x=>$(x).hidden=x!==i);
-let cfg,me,off=0,lock=false,sock,stream,pcs={},auds={},remoteVideos={},mem=[],RID,KEY,LINK,tab='pm',MAXM=4;
+let cfg,me,off=0,lock=false,sock,stream,pcs={},streams={},tiles={},mem=null,RID,KEY,LINK,MAXM=4,lastBy='',mname='';
 const post=(u,b)=>fetch(u,{method:'POST',headers:{'Content-Type':'application/json'},body:b&&JSON.stringify(b)});
 const COLORS=['#e5383b','#3a86ff','#8338ec','#06a77d','#fb8500','#d81b60'];
-function av(m,cls){
-  if(m.picture){const i=document.createElement('img');i.className='av '+(cls||'');i.src=m.picture;i.referrerPolicy='no-referrer';return i}
-  const d=document.createElement('div');d.className='av '+(cls||'');d.textContent=(m.name||'?')[0].toUpperCase();
+const fmt=s=>Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0');
+function av(m){
+  if(m.picture){const i=document.createElement('img');i.className='av';i.src=m.picture;i.referrerPolicy='no-referrer';return i}
+  const d=document.createElement('div');d.className='av';d.textContent=(m.name||'?')[0].toUpperCase();
   d.style.background=COLORS[[...(m.name||'?')].reduce((a,c)=>a+c.charCodeAt(0),0)%COLORS.length];return d;
 }
 (async()=>{
@@ -120,42 +126,54 @@ $('switch').onclick=async()=>{if(window.google)google.accounts.id.disableAutoSel
 $('go').onclick=()=>join($('nm').value.trim()||'Guest');
 $('leave').onclick=()=>{if(sock)sock.disconnect();location.href='/'};
 
+function sys(t){const d=document.createElement('div');d.className='sys';d.textContent='— '+t+' —';$('msgs').append(d);$('msgs').scrollTop=1e9}
 function join(name){
   show('room');$('lnk').value=LINK;
-  const T='Join my movie watch party 🎬';
+  const T='Join my movie theatre 🎬';
   $('wa').href='https://wa.me/?text='+encodeURIComponent(T+' '+LINK);
   $('tg').href='https://t.me/share/url?url='+encodeURIComponent(LINK)+'&text='+encodeURIComponent(T);
   sock=io();
   sock.on('connect',()=>sock.emit('join',{id:RID,key:KEY,name},a=>{
     if(a.error){$('jerr').textContent=a.error;sock.disconnect();show('join');return}
     me=a.me;MAXM=a.max;off=a.now-Date.now();
-    if(a.movie)setMovie(a.movie);apply(a.state);st('Connected. Everyone stays in sync.');
+    if(a.movie)setMovie(a.movie);apply(a.state);ov();st('Connected. Everyone stays in sync.');
   }));
-  sock.on('members',l=>{mem=l;render();
+  sock.on('members',l=>{
+    if(mem){l.filter(x=>!mem.some(y=>y.id===x.id)).forEach(x=>x.id!==me&&sys(x.name+' joined the theatre'));
+      mem.filter(y=>!l.some(x=>x.id===y.id)).forEach(y=>sys(y.name+' left the theatre'))}
+    mem=l;render();
     Object.keys(pcs).forEach(k=>{if(!l.some(x=>x.id===k))drop(k)});vsync()});
-  sock.on('movie',d=>{setMovie(d.movie);apply(d.state)});
-  sock.on('state',apply);
+  sock.on('movie',d=>{setMovie(d.movie);apply(d.state);ov()});
+  sock.on('state',s=>{lastBy=s.by||'';sys(`${lastBy} ${s.playing?'played':'paused'} at ${fmt(s.time)}`);apply(s);ov()});
   sock.on('chat',c=>{
-    const mine=c.id===me,row=document.createElement('div'),b=document.createElement('div'),n=document.createElement('b'),t=document.createElement('span');
-    row.className='m'+(mine?' me':'');n.textContent=c.name;t.textContent=c.text;b.className='bub';b.append(n,t);
-    row.append(av(mem.find(x=>x.id===c.id)||{name:c.name}),b);$('msgs').append(row);$('msgs').scrollTop=1e9;
-    if(tab!=='pc')$('dot').hidden=false});
+    const mine=c.id===me,row=document.createElement('div'),b=document.createElement('div'),n=document.createElement('div'),t=document.createElement('div'),w=document.createElement('div');
+    row.className='m'+(mine?' me':'');n.className='nm';n.textContent=c.name;t.textContent=c.text;b.className='bub';b.append(t);
+    w.append(...(mine?[b]:[n,b]));if(!mine)row.append(av((mem||[]).find(x=>x.id===c.id)||{name:c.name}));row.append(w);
+    $('msgs').append(row);$('msgs').scrollTop=1e9});
   sock.on('signal',onSig);
 }
-function render(){
-  $('cap').textContent=mem.length+'/'+MAXM+' members';
-  const L=$('list');L.textContent='';
-  mem.forEach(m=>{
-    const t=document.createElement('div'),n=document.createElement('div'),k=document.createElement('span');
-    t.className='tile'+(m.voice?' live':'');n.className='nm';n.textContent=m.name+(m.id===me?' (you)':'');
-    if(m.owner){const g=document.createElement('span');g.className='tag';g.textContent='HOST';n.append(g)}
-    k.textContent=m.video?'📹':(m.voice?'🎙':'🔇');t.append(av(m),n,k);L.append(t);
-  });
+function tile(m){
+  if(tiles[m.id])return tiles[m.id];
+  const d=document.createElement('div'),vid=document.createElement('video'),lb=document.createElement('div'),mi=document.createElement('div');
+  vid.autoplay=true;vid.playsInline=true;if(m.id===me)vid.muted=true;
+  d.className='tile';lb.className='lb';mi.className='mi';d.append(vid,av(m),lb,mi);
+  if(m.id===me&&stream)vid.srcObject=stream;else if(streams[m.id])vid.srcObject=streams[m.id];
+  return tiles[m.id]={d,vid,lb,mi};
 }
-document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{
-  tab=b.dataset.t;document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===b));
-  $('pm').hidden=tab!=='pm';$('pc').hidden=tab!=='pc';if(tab==='pc')$('dot').hidden=true});
-function setMovie(m){v.src=m.url;$('mname').textContent='Now showing: '+m.name}
+function render(){
+  $('tt').textContent=((mem.find(x=>x.owner)||mem[0]||{}).name||'')+'’s Theatre';
+  $('cap').textContent=mem.length+'/'+MAXM;
+  Object.keys(tiles).forEach(k=>{if(!mem.some(x=>x.id===k)){tiles[k].d.remove();delete tiles[k]}});
+  mem.forEach(m=>{const t=tile(m);
+    t.d.classList.toggle('cam',!!(m.voice&&m.cam));t.d.classList.toggle('away',!m.voice);
+    t.lb.textContent=(m.id===me?'You':m.name)+(m.owner?' ★':'');t.mi.textContent=m.voice?(m.mic?'🎙':'🔇'):'';
+    $('tiles').append(t.d)});
+}
+function setMovie(m){mname=m.name;v.src=m.url}
+function ov(){
+  const show=!!v.src&&v.paused;$('ov').hidden=!show;
+  $('by').textContent=lastBy?'Paused by '+lastBy:'Ready to play';$('mt').textContent=mname.replace(/\.[^.]+$/,'');
+}
 function apply(s){
   if(!v.src||!s)return;
   const t=s.time+(s.playing?(Date.now()+off-s.at)/1000:0);lock=true;
@@ -164,7 +182,8 @@ function apply(s){
   if(!s.playing&&!v.paused)v.pause();
   setTimeout(()=>lock=false,500);
 }
-['play','pause','seeked'].forEach(e=>v.addEventListener(e,()=>{if(!lock&&sock)sock.emit('ctrl',{playing:!v.paused,time:v.currentTime})}));
+['play','pause','seeked'].forEach(e=>v.addEventListener(e,()=>{ov();if(!lock&&sock)sock.emit('ctrl',{playing:!v.paused,time:v.currentTime})}));
+$('b10').onclick=()=>{v.currentTime=Math.max(0,v.currentTime-10)};$('f10').onclick=()=>{v.currentTime+=10};
 $('up').onchange=e=>{
   const f=e.target.files[0];if(!f)return;
   const x=new XMLHttpRequest(),fd=new FormData();fd.append('movie',f);
@@ -178,49 +197,39 @@ $('send').onclick=send;$('msg').onkeydown=e=>e.key==='Enter'&&send();
 $('inv').onclick=()=>$('modal').hidden=false;$('mx').onclick=()=>$('modal').hidden=true;
 const cp=m=>navigator.clipboard.writeText(LINK).then(()=>$('mst').textContent=m,()=>$('mst').textContent='Copy this link: '+LINK);
 $('cp').onclick=()=>cp('Link copied.');$('ig').onclick=()=>cp('Link copied. Paste it in an Instagram DM or story.');
-$('sh').onclick=()=>navigator.share?navigator.share({title:'Movie Watch Party',url:LINK}).catch(()=>{}):cp('Link copied.');
+$('sh').onclick=()=>navigator.share?navigator.share({title:'Movie theatre',url:LINK}).catch(()=>{}):cp('Link copied.');
 
-// ---- video + voice calling (WebRTC mesh; signalling over Socket.IO) ----
-function callTile(id,name,isLocal=false){
-  const key=isLocal?'local':id; let tile=document.getElementById('call-'+key);
-  if(!tile){tile=document.createElement('div');tile.className='calltile';tile.id='call-'+key;
-    const video=document.createElement('video');video.autoplay=true;video.playsInline=true;video.muted=isLocal;
-    const label=document.createElement('span');label.className='label';label.textContent=name+(isLocal?' (you)':'');
-    const ph=document.createElement('div');ph.className='placeholder';ph.textContent='Camera is off';
-    tile.append(video,ph,label);$('calls').append(tile);}
-  return tile;
-}
-function showStream(id,name,media,isLocal=false){
-  const tile=callTile(id,name,isLocal),video=tile.querySelector('video'),ph=tile.querySelector('.placeholder');
-  video.srcObject=media;video.play().catch(()=>{});ph.hidden=media.getVideoTracks().some(t=>t.enabled&&t.readyState==='live');
-}
+// ---- camera + voice (WebRTC mesh; signalling over the socket) ----
 function mk(id){
   if(pcs[id])return pcs[id];
   const pc=pcs[id]=new RTCPeerConnection({iceServers:[{urls:'stun:stun.l.google.com:19302'}]});
   stream.getTracks().forEach(t=>pc.addTrack(t,stream));
   pc.onicecandidate=e=>e.candidate&&sock.emit('signal',{to:id,data:{c:e.candidate}});
-  pc.ontrack=e=>{const m=mem.find(x=>x.id===id),name=m?m.name:'Guest';showStream(id,name,e.streams[0]);};
+  pc.ontrack=e=>{streams[id]=e.streams[0];const t=tiles[id];if(t){t.vid.srcObject=e.streams[0];t.vid.play().catch(()=>{})}};
   return pc;
 }
-function drop(id){pcs[id]&&pcs[id].close();delete pcs[id];if(auds[id]){auds[id].remove();delete auds[id]}const tile=document.getElementById('call-'+id);if(tile)tile.remove()}
+function drop(id){pcs[id]&&pcs[id].close();delete pcs[id];delete streams[id];if(tiles[id])tiles[id].vid.srcObject=null}
 async function call(id){const pc=mk(id);await pc.setLocalDescription(await pc.createOffer());sock.emit('signal',{to:id,data:{sdp:pc.localDescription}})}
-function vsync(){if(stream)mem.forEach(m=>{if((m.voice||m.video)&&m.id!==me&&me<m.id&&!pcs[m.id])call(m.id).catch(()=>{})})}
+function vsync(){if(stream)mem.forEach(m=>{if(m.voice&&m.id!==me&&me<m.id&&!pcs[m.id])call(m.id).catch(()=>{})})}
 async function onSig({from,data}){
   if(!stream)return;
   try{const pc=mk(from);
     if(data.sdp){await pc.setRemoteDescription(data.sdp);if(data.sdp.type==='offer'){await pc.setLocalDescription(await pc.createAnswer());sock.emit('signal',{to:from,data:{sdp:pc.localDescription}})}}
     else if(data.c)await pc.addIceCandidate(data.c);
-  }catch(e){console.warn('WebRTC signalling error',e)}
+  }catch(e){}
 }
 $('vj').onclick=async()=>{
-  try{stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true},video:{width:{ideal:640},height:{ideal:360},frameRate:{ideal:20,max:24}}})}
-  catch(e){return st('Camera/microphone unavailable. Allow permissions and use HTTPS (localhost is also secure).')}
-  showStream('local','You',stream,true);
-  $('vj').hidden=true;$('vm').hidden=$('vc').hidden=$('vl').hidden=false;
-  sock.emit('voice',true);sock.emit('camera',true);vsync();st('Camera and microphone on. Use headphones to reduce echo.');
+  try{stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true},video:{width:640,height:480}})}
+  catch(e){try{stream=await navigator.mediaDevices.getUserMedia({audio:true})}catch(e2){return st('Camera and microphone blocked. Allow them in your browser (needs HTTPS).')}}
+  const hasCam=stream.getVideoTracks().length>0;
+  $('vj').hidden=true;$('vl').hidden=false;$('bm').hidden=false;$('bc').hidden=!hasCam;
+  $('bm').classList.remove('off');$('bc').classList.remove('off');
+  if(tiles[me])tiles[me].vid.srcObject=stream;
+  sock.emit('voice',true);sock.emit('cam',hasCam);sock.emit('mic',true);vsync();st('You are in the call. Headphones help avoid echo.');
 };
-$('vc').onclick=()=>{const t=stream&&stream.getVideoTracks()[0];if(!t)return;t.enabled=!t.enabled;$('vc').textContent=t.enabled?'Camera off':'Camera on';const ph=document.querySelector('#call-local .placeholder');if(ph)ph.hidden=t.enabled};
-$('vm').onclick=()=>{const t=stream&&stream.getAudioTracks()[0];if(!t)return;t.enabled=!t.enabled;$('vm').textContent=t.enabled?'Mute mic':'Unmute mic'};
-$('vl').onclick=()=>{Object.keys(pcs).forEach(drop);if(stream)stream.getTracks().forEach(t=>t.stop());stream=null;const tile=document.getElementById('call-local');if(tile)tile.remove();sock.emit('voice',false);sock.emit('camera',false);$('vj').hidden=false;$('vm').hidden=$('vc').hidden=$('vl').hidden=true};
+$('bm').onclick=()=>{const t=stream.getAudioTracks()[0];t.enabled=!t.enabled;$('bm').classList.toggle('off',!t.enabled);sock.emit('mic',t.enabled)};
+$('bc').onclick=()=>{const t=stream.getVideoTracks()[0];t.enabled=!t.enabled;$('bc').classList.toggle('off',!t.enabled);sock.emit('cam',t.enabled)};
+$('vl').onclick=()=>{Object.keys(pcs).forEach(drop);stream.getTracks().forEach(t=>t.stop());stream=null;if(tiles[me])tiles[me].vid.srcObject=null;
+  sock.emit('voice',false);sock.emit('cam',false);sock.emit('mic',false);$('vj').hidden=false;$('vl').hidden=$('bm').hidden=$('bc').hidden=true};
 </script>
 </body></html>
