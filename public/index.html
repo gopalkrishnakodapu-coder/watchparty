@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Movie Watch Party</title>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<style>
+:root{--bg:#0b0d14;--p:#141826;--p2:#1b2133;--line:#262d44;--text:#eef0f7;--mute:#8d96b3;--red:#e5383b;--green:#2ecc71;color-scheme:dark}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,Segoe UI,sans-serif}
+button,.btn{background:var(--red);color:#fff;border:0;border-radius:8px;padding:9px 14px;font:inherit;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block}
+.ghost{background:var(--p2);border:1px solid var(--line);color:var(--text)}
+input[type=text]{background:var(--bg);border:1px solid var(--line);color:var(--text);padding:10px;border-radius:8px;font:inherit;min-width:0}
+.mute{color:var(--mute);font-size:13px}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.center{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px}
+.card{background:var(--p);border:1px solid var(--line);border-radius:16px;padding:28px;max-width:400px;width:100%;text-align:center}
+.card h1{margin:0 0 8px;font-size:22px}.card .row{justify-content:center;margin-top:12px}
+#gbtn,#gbtn2{display:flex;justify-content:center;margin-top:14px}
+.av{width:40px;height:40px;border-radius:50%;object-fit:cover;display:flex;align-items:center;justify-content:center;font-weight:700;flex:none;color:#fff}
+.top{display:flex;align-items:center;gap:12px;padding:12px 18px;border-bottom:1px solid var(--line)}
+.title{flex:1;font-weight:700;font-size:17px}.title small{display:block;color:var(--mute);font-weight:400;font-size:12px}
+.pill{background:var(--p2);border:1px solid var(--line);border-radius:99px;padding:4px 12px;font-size:13px}
+.stage{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:16px;padding:16px 18px;max-width:1400px;margin:0 auto}
+@media(max-width:860px){.stage{grid-template-columns:1fr}}
+.screen{background:#000;border-radius:14px;overflow:hidden;aspect-ratio:16/9;border:1px solid var(--line)}
+video{width:100%;height:100%}
+#calls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}
+.calltile{position:relative;background:#050608;border:1px solid var(--line);border-radius:12px;overflow:hidden;aspect-ratio:16/9;min-width:0}
+.calltile video{display:block;width:100%;height:100%;object-fit:cover}
+.calltile .label{position:absolute;left:8px;bottom:7px;background:#000a;padding:3px 8px;border-radius:6px;font-size:12px}
+.calltile .placeholder{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--mute);font-size:13px}
+@media(max-width:520px){#calls{grid-template-columns:1fr}}
+.bar{display:flex;gap:12px;align-items:center;margin-top:12px;flex-wrap:wrap}
+.side{background:var(--p);border:1px solid var(--line);border-radius:14px;display:flex;flex-direction:column;min-height:420px;max-height:calc(100vh - 100px)}
+.tabs{display:flex;border-bottom:1px solid var(--line)}
+.tab{flex:1;background:none;border-radius:0;color:var(--mute);padding:12px;border-bottom:2px solid transparent}
+.tab.on{color:var(--text);border-color:var(--red)}
+#dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--red);vertical-align:middle}
+.pane{flex:1;display:flex;flex-direction:column;padding:12px;min-height:0;gap:10px}
+#list{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:8px}
+.tile{display:flex;align-items:center;gap:12px;background:var(--p2);border:1px solid var(--line);border-radius:12px;padding:10px}
+.tile.live{border-color:var(--green)}.tile .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tag{font-size:11px;color:var(--red);margin-left:6px}
+#msgs{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
+.m{display:flex;gap:8px;align-items:flex-end}.m.me{flex-direction:row-reverse}
+.m .av{width:28px;height:28px;font-size:12px}
+.bub{background:var(--p2);border-radius:12px;padding:6px 10px;max-width:80%;word-wrap:break-word}
+.m.me .bub{background:var(--red)}.bub b{display:block;font-size:11px;color:var(--mute)}.m.me .bub b{display:none}
+#modal{position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;padding:16px;z-index:9}
+#modal[hidden]{display:none}.wa{background:#1fa855}.tg{background:#2a8fd0}.ig{background:linear-gradient(45deg,#f09433,#dc2743,#bc1888)}
+</style></head><body>
+
+<div id="home" class="center" hidden><div class="card">
+  <h1>🎬 Movie Watch Party</h1>
+  <p class="mute" id="who">Sign in with any Gmail to host a private screening for up to 4 friends.</p>
+  <div id="acct" class="row" hidden><img id="pic" class="av" referrerpolicy="no-referrer" alt=""><span id="mail"></span></div>
+  <div id="gbtn"></div>
+  <div class="row"><button id="create" hidden>Create a party</button><button class="ghost" id="switch" hidden>Use a different Gmail</button></div>
+  <p class="mute" id="err"></p>
+</div></div>
+
+<div id="join" class="center" hidden><div class="card">
+  <h1>You’re invited 🍿</h1><p class="mute">Join the screening as a guest, or with your Gmail.</p>
+  <div class="row"><input type="text" id="nm" maxlength="24" placeholder="Your name"><button id="go">Join</button></div>
+  <p class="mute">or</p><div id="gbtn2"></div><p class="mute" id="jerr"></p>
+</div></div>
+
+<div id="room" hidden>
+  <div class="top"><button class="ghost" id="leave">← Leave</button>
+    <div class="title">Movie Watch Party<small id="mname">No movie yet</small></div>
+    <span class="pill" id="cap"></span><button id="inv">+ Invite friends</button></div>
+  <div class="stage">
+    <section><div class="screen"><video id="v" controls playsinline></video></div>
+      <div class="bar"><label class="btn ghost">⬆ Upload movie<input type="file" id="up" accept="video/*" hidden></label>
+      <span class="mute" id="st">Connecting…</span></div><div id="calls" aria-label="Video call participants"></div></section>
+    <aside class="side">
+      <div class="tabs"><button class="tab on" data-t="pm">Members</button><button class="tab" data-t="pc">Chat <i id="dot" hidden></i></button></div>
+      <div class="pane" id="pm"><div id="list"></div>
+        <div class="row"><button id="vj">📹 Join video & audio</button><button class="ghost" id="vm" hidden>Mute mic</button><button class="ghost" id="vc" hidden>Camera off</button><button class="ghost" id="vl" hidden>Leave call</button></div></div>
+      <div class="pane" id="pc" hidden><div id="msgs"></div>
+        <div class="row" style="flex-wrap:nowrap"><input type="text" id="msg" maxlength="300" placeholder="Type a message…" style="flex:1"><button id="send">Send</button></div></div>
+    </aside>
+  </div>
+  <div id="modal" hidden><div class="card"><h1>Invite friends</h1>
+    <input type="text" id="lnk" readonly style="width:100%">
+    <div class="row"><a class="btn wa" id="wa" target="_blank" rel="noopener">WhatsApp</a><a class="btn tg" id="tg" target="_blank" rel="noopener">Telegram</a>
+    <button class="ig" id="ig">Instagram</button><button class="ghost" id="sh">Share…</button><button id="cp">Copy link</button></div>
+    <p class="mute" id="mst">Up to 4 people can join.</p><button class="ghost" id="mx">Close</button></div></div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+const $=i=>document.getElementById(i),v=$('v'),st=t=>$('st').textContent=t;
+const show=i=>['home','join','room'].forEach(x=>$(x).hidden=x!==i);
+let cfg,me,off=0,lock=false,sock,stream,pcs={},auds={},remoteVideos={},mem=[],RID,KEY,LINK,tab='pm',MAXM=4;
+const post=(u,b)=>fetch(u,{method:'POST',headers:{'Content-Type':'application/json'},body:b&&JSON.stringify(b)});
+const COLORS=['#e5383b','#3a86ff','#8338ec','#06a77d','#fb8500','#d81b60'];
+function av(m,cls){
+  if(m.picture){const i=document.createElement('img');i.className='av '+(cls||'');i.src=m.picture;i.referrerPolicy='no-referrer';return i}
+  const d=document.createElement('div');d.className='av '+(cls||'');d.textContent=(m.name||'?')[0].toUpperCase();
+  d.style.background=COLORS[[...(m.name||'?')].reduce((a,c)=>a+c.charCodeAt(0),0)%COLORS.length];return d;
+}
+(async()=>{
+  cfg=await (await fetch('/api/config')).json();
+  const u=await (await fetch('/api/me')).json(),m=location.pathname.match(/^\/r\/(\w+)/);
+  if(m){RID=m[1];KEY=new URLSearchParams(location.search).get('k');LINK=location.href;
+    if(u.name)join(u.name);else{show('join');gsi('gbtn2')}}
+  else{show('home');
+    if(u.email){$('acct').hidden=false;$('mail').textContent=u.email;if(u.picture)$('pic').src=u.picture;else $('pic').hidden=true;
+      $('who').textContent='Signed in. Ready to host.';$('create').hidden=$('switch').hidden=false}
+    else gsi('gbtn')}
+})();
+function gsi(el){
+  if(!window.google)return setTimeout(()=>gsi(el),200);
+  google.accounts.id.initialize({client_id:cfg.clientId,auto_select:false,callback:async r=>{
+    const x=await post('/api/login',{credential:r.credential});
+    x.ok?location.reload():($('err').textContent=$('jerr').textContent=(await x.json()).error)}});
+  google.accounts.id.renderButton($(el),{theme:'filled_black',size:'large',text:'continue_with'});
+}
+$('create').onclick=async()=>{const r=await post('/api/room');if(!r.ok)return $('err').textContent='Please sign in again.';const d=await r.json();location.href=`/r/${d.id}?k=${d.key}`};
+$('switch').onclick=async()=>{if(window.google)google.accounts.id.disableAutoSelect();await post('/api/logout');location.reload()};
+$('go').onclick=()=>join($('nm').value.trim()||'Guest');
+$('leave').onclick=()=>{if(sock)sock.disconnect();location.href='/'};
+
+function join(name){
+  show('room');$('lnk').value=LINK;
+  const T='Join my movie watch party 🎬';
+  $('wa').href='https://wa.me/?text='+encodeURIComponent(T+' '+LINK);
+  $('tg').href='https://t.me/share/url?url='+encodeURIComponent(LINK)+'&text='+encodeURIComponent(T);
+  sock=io();
+  sock.on('connect',()=>sock.emit('join',{id:RID,key:KEY,name},a=>{
+    if(a.error){$('jerr').textContent=a.error;sock.disconnect();show('join');return}
+    me=a.me;MAXM=a.max;off=a.now-Date.now();
+    if(a.movie)setMovie(a.movie);apply(a.state);st('Connected. Everyone stays in sync.');
+  }));
+  sock.on('members',l=>{mem=l;render();
+    Object.keys(pcs).forEach(k=>{if(!l.some(x=>x.id===k))drop(k)});vsync()});
+  sock.on('movie',d=>{setMovie(d.movie);apply(d.state)});
+  sock.on('state',apply);
+  sock.on('chat',c=>{
+    const mine=c.id===me,row=document.createElement('div'),b=document.createElement('div'),n=document.createElement('b'),t=document.createElement('span');
+    row.className='m'+(mine?' me':'');n.textContent=c.name;t.textContent=c.text;b.className='bub';b.append(n,t);
+    row.append(av(mem.find(x=>x.id===c.id)||{name:c.name}),b);$('msgs').append(row);$('msgs').scrollTop=1e9;
+    if(tab!=='pc')$('dot').hidden=false});
+  sock.on('signal',onSig);
+}
+function render(){
+  $('cap').textContent=mem.length+'/'+MAXM+' members';
+  const L=$('list');L.textContent='';
+  mem.forEach(m=>{
+    const t=document.createElement('div'),n=document.createElement('div'),k=document.createElement('span');
+    t.className='tile'+(m.voice?' live':'');n.className='nm';n.textContent=m.name+(m.id===me?' (you)':'');
+    if(m.owner){const g=document.createElement('span');g.className='tag';g.textContent='HOST';n.append(g)}
+    k.textContent=m.video?'📹':(m.voice?'🎙':'🔇');t.append(av(m),n,k);L.append(t);
+  });
+}
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{
+  tab=b.dataset.t;document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===b));
+  $('pm').hidden=tab!=='pm';$('pc').hidden=tab!=='pc';if(tab==='pc')$('dot').hidden=true});
+function setMovie(m){v.src=m.url;$('mname').textContent='Now showing: '+m.name}
+function apply(s){
+  if(!v.src||!s)return;
+  const t=s.time+(s.playing?(Date.now()+off-s.at)/1000:0);lock=true;
+  if(Math.abs(v.currentTime-t)>1.2)v.currentTime=t;
+  if(s.playing&&v.paused)v.play().catch(()=>st('Press play to join in (autoplay was blocked).'));
+  if(!s.playing&&!v.paused)v.pause();
+  setTimeout(()=>lock=false,500);
+}
+['play','pause','seeked'].forEach(e=>v.addEventListener(e,()=>{if(!lock&&sock)sock.emit('ctrl',{playing:!v.paused,time:v.currentTime})}));
+$('up').onchange=e=>{
+  const f=e.target.files[0];if(!f)return;
+  const x=new XMLHttpRequest(),fd=new FormData();fd.append('movie',f);
+  x.open('POST',`/api/room/${RID}/upload?sid=${me}`);
+  x.upload.onprogress=p=>st('Uploading '+Math.round(p.loaded/p.total*100)+'%');
+  x.onload=()=>st(x.status===200?'Movie ready. Press play.':'Upload failed: '+x.responseText);
+  x.onerror=()=>st('Upload failed. Check your connection.');x.send(fd);
+};
+const send=()=>{const t=$('msg').value.trim();if(t){sock.emit('chat',t);$('msg').value=''}};
+$('send').onclick=send;$('msg').onkeydown=e=>e.key==='Enter'&&send();
+$('inv').onclick=()=>$('modal').hidden=false;$('mx').onclick=()=>$('modal').hidden=true;
+const cp=m=>navigator.clipboard.writeText(LINK).then(()=>$('mst').textContent=m,()=>$('mst').textContent='Copy this link: '+LINK);
+$('cp').onclick=()=>cp('Link copied.');$('ig').onclick=()=>cp('Link copied. Paste it in an Instagram DM or story.');
+$('sh').onclick=()=>navigator.share?navigator.share({title:'Movie Watch Party',url:LINK}).catch(()=>{}):cp('Link copied.');
+
+// ---- video + voice calling (WebRTC mesh; signalling over Socket.IO) ----
+function callTile(id,name,isLocal=false){
+  const key=isLocal?'local':id; let tile=document.getElementById('call-'+key);
+  if(!tile){tile=document.createElement('div');tile.className='calltile';tile.id='call-'+key;
+    const video=document.createElement('video');video.autoplay=true;video.playsInline=true;video.muted=isLocal;
+    const label=document.createElement('span');label.className='label';label.textContent=name+(isLocal?' (you)':'');
+    const ph=document.createElement('div');ph.className='placeholder';ph.textContent='Camera is off';
+    tile.append(video,ph,label);$('calls').append(tile);}
+  return tile;
+}
+function showStream(id,name,media,isLocal=false){
+  const tile=callTile(id,name,isLocal),video=tile.querySelector('video'),ph=tile.querySelector('.placeholder');
+  video.srcObject=media;video.play().catch(()=>{});ph.hidden=media.getVideoTracks().some(t=>t.enabled&&t.readyState==='live');
+}
+function mk(id){
+  if(pcs[id])return pcs[id];
+  const pc=pcs[id]=new RTCPeerConnection({iceServers:[{urls:'stun:stun.l.google.com:19302'}]});
+  stream.getTracks().forEach(t=>pc.addTrack(t,stream));
+  pc.onicecandidate=e=>e.candidate&&sock.emit('signal',{to:id,data:{c:e.candidate}});
+  pc.ontrack=e=>{const m=mem.find(x=>x.id===id),name=m?m.name:'Guest';showStream(id,name,e.streams[0]);};
+  return pc;
+}
+function drop(id){pcs[id]&&pcs[id].close();delete pcs[id];if(auds[id]){auds[id].remove();delete auds[id]}const tile=document.getElementById('call-'+id);if(tile)tile.remove()}
+async function call(id){const pc=mk(id);await pc.setLocalDescription(await pc.createOffer());sock.emit('signal',{to:id,data:{sdp:pc.localDescription}})}
+function vsync(){if(stream)mem.forEach(m=>{if((m.voice||m.video)&&m.id!==me&&me<m.id&&!pcs[m.id])call(m.id).catch(()=>{})})}
+async function onSig({from,data}){
+  if(!stream)return;
+  try{const pc=mk(from);
+    if(data.sdp){await pc.setRemoteDescription(data.sdp);if(data.sdp.type==='offer'){await pc.setLocalDescription(await pc.createAnswer());sock.emit('signal',{to:from,data:{sdp:pc.localDescription}})}}
+    else if(data.c)await pc.addIceCandidate(data.c);
+  }catch(e){console.warn('WebRTC signalling error',e)}
+}
+$('vj').onclick=async()=>{
+  try{stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true},video:{width:{ideal:640},height:{ideal:360},frameRate:{ideal:20,max:24}}})}
+  catch(e){return st('Camera/microphone unavailable. Allow permissions and use HTTPS (localhost is also secure).')}
+  showStream('local','You',stream,true);
+  $('vj').hidden=true;$('vm').hidden=$('vc').hidden=$('vl').hidden=false;
+  sock.emit('voice',true);sock.emit('camera',true);vsync();st('Camera and microphone on. Use headphones to reduce echo.');
+};
+$('vc').onclick=()=>{const t=stream&&stream.getVideoTracks()[0];if(!t)return;t.enabled=!t.enabled;$('vc').textContent=t.enabled?'Camera off':'Camera on';const ph=document.querySelector('#call-local .placeholder');if(ph)ph.hidden=t.enabled};
+$('vm').onclick=()=>{const t=stream&&stream.getAudioTracks()[0];if(!t)return;t.enabled=!t.enabled;$('vm').textContent=t.enabled?'Mute mic':'Unmute mic'};
+$('vl').onclick=()=>{Object.keys(pcs).forEach(drop);if(stream)stream.getTracks().forEach(t=>t.stop());stream=null;const tile=document.getElementById('call-local');if(tile)tile.remove();sock.emit('voice',false);sock.emit('camera',false);$('vj').hidden=false;$('vm').hidden=$('vc').hidden=$('vl').hidden=true};
+</script>
+</body></html>

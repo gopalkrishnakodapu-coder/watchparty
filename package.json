@@ -1,0 +1,14 @@
+{
+  "name": "movie-watch-party",
+  "version": "1.0.0",
+  "private": true,
+  "engines": { "node": ">=20.6" },
+  "scripts": { "start": "node --env-file=.env server.js", "start:prod": "node server.js" },
+  "dependencies": {
+    "express": "^4.19.2",
+    "google-auth-library": "^9.14.0",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.1",
+    "socket.io": "^4.7.5"
+  }
+}
